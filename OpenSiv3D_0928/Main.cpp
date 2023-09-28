@@ -18,9 +18,11 @@ struct Item
 {
 	// アイテムの種類
 	int32 type;
+	int32 type2;
 
 	// アイテムの現在位置
 	Vec2 pos;
+	Vec2 pos2;
 };
 
 void Main()
@@ -45,7 +47,8 @@ void Main()
 	{
 		{ Texture{ U"🍧"_emoji }, 200.0, 100 },
 		{ Texture{ U"🍨"_emoji }, 300.0, 100 },
-		{ Texture{ U"⚡"_emoji }, 300.0, -200 },//雷
+		{ Texture{ U"⚡"_emoji }, 300.0, -100 },
+		{ Texture{ U"💣"_emoji }, 300.0, -200 },
 	};
 
 	// 最後にアイテムが発生してからの経過時間（秒）
@@ -97,8 +100,10 @@ void Main()
 				// 新しく出現するアイテムを配列に追加する
 				items << Item
 				{
-					.type = (RandomBool(0.9) ? 1:2), // アイテムの種類
+					.type = (RandomBool(0.9) ? 0 : 3), // アイテムの種類
+					//.type2 = (RandomBool(0.9) ? 1 : 2),
 					.pos = { Random(100, 700), -100 }, // アイテムの初期座標
+					//.pos2 = { Random(100, 700), -100 },
 				};
 
 				itemSpawnAccumulatedTime -= ItemSpawnInterval;
@@ -134,9 +139,13 @@ void Main()
 					++it;
 				}
 			}
-
+			const String s = U"Siv3D";
+			Print << s;
 			// 画面外に出たアイテムを消去する
 			items.remove_if([](const Item& item) { return (700 < item.pos.y); });
+			if (score > 1000) {
+				Print << s.size();
+			}
 		}
 
 		////////////////////////////////
@@ -160,6 +169,10 @@ void Main()
 			ItemInfos[item.type].texture.resized(ItemRadius * 2).drawAt(item.pos);
 		}
 
+		//for (const auto& item : items)
+		//{
+		//	ItemInfos[item.type2].texture.resized(ItemRadius * 2).drawAt(item.pos2);
+		//}
 		// スコアを描画する
 		font(ThousandsSeparate(score)).draw(30, Vec2{ 20, 20 });
 	}
